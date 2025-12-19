@@ -1,0 +1,82 @@
+# Alembic Migrations
+
+Gerenciamento de migrações de banco de dados usando **Alembic** e SQLAlchemy.
+
+---
+
+## 📦 Instalação
+
+```bash
+pip install alembic
+```
+
+---
+
+## ⚙️ Inicialização
+
+```bash
+# Inicializa Alembic
+alembic init alembic
+```
+
+Configure a URL do banco no `alembic.ini`:
+
+```ini
+sqlalchemy.url = postgresql+psycopg2://usuario:senha@localhost:5432/meubanco
+```
+
+E a metadata no `env.py`:
+
+```python
+from myapp.models import Base
+target_metadata = Base.metadata
+```
+
+---
+
+## 📑 Comandos Essenciais
+
+### Criar Migração
+
+```bash
+# Migração vazia
+alembic revision -m "descrição da mudança"
+
+# Migração automática
+alembic revision --autogenerate -m "descrição da mudança"
+```
+
+### Aplicar e Reverter Migrações
+
+```bash
+# Aplicar todas as migrações
+alembic upgrade head
+
+# Reverter última migração
+alembic downgrade -1
+
+# Reverter para uma versão específica
+alembic downgrade <revision_id>
+```
+
+### Histórico
+
+```bash
+alembic history --verbose
+```
+
+---
+
+## 🔄 Reset de Banco (Desenvolvimento)
+
+```bash
+alembic downgrade base
+alembic upgrade head
+```
+
+---
+
+## ⚡️ Referências
+
+- [Alembic Documentation](https://alembic.sqlalchemy.org/)
+- [SQLAlchemy Metadata](https://docs.sqlalchemy.org/en/20/core/metadata.html#metadata)
