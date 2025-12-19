@@ -82,7 +82,7 @@ Clone o repositório, extraia os dados do link na pasta seed/data e suba os cont
 - [Dados de São Paulo](https://drive.google.com/file/d/15ghpnwzdDhFqelouqvQwXlbzovtPhlFe/view?usp=sharing)
 
 ```bash
-git clone https://github.com/wfalmeida/MeuAT-Desafio.git
+git clone https://github.com/wfalmeida/meuat-desafio-tecnico.git
 cd MeuAT-Desafio
 docker-compose up --build
 ```
