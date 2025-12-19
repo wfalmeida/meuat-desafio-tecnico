@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: meuat-db
+    environment:
+      POSTGRES_DB: meuat
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d meuat"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meuat-api
+    env_file:
+      - .docker.env
+    environment:
+      PYTHONPATH: /app
+    command: >
+      sh -c "
+      echo '[API] Running migrations...' &&
+      alembic upgrade head &&
+      echo '[API] Migrations finished.' &&
+      echo '[API] Running seed...' &&
+      python -m seed.seedFazendas &&
+      echo '[API] Seed finished.' &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers
+      "
+    volumes:
+      - .:/app
+      - ./seed/data:/app/seed/data:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+volumes:
+  db_data:
+    name: meuat-db-data
